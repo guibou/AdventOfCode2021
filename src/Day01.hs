@@ -1,31 +1,22 @@
 module Day01 where
 
 import Data.List (zipWith3)
-import qualified Data.Text as Text
 import Relude.Unsafe
 import Utils
+import qualified Data.Text as Text
 
 fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> [Int]
-parseContent = map (read . Text.unpack) . words
+parseContent = map (read.Text.unpack) . words
 
 -- * Generics
 
-cumSum =
-  foldl'
-    ( \(p, count) new ->
-        if new > p then (new, count + 1) else (new, count)
-    )
-    (0, -1 :: Int)
-
 -- * FIRST problem
-
-day = snd . cumSum
+day l = length $ filter (<0) $ zipWith (-) l (Relude.Unsafe.tail l)
 
 -- * SECOND problem
-
 day' values = day $ zipWith3 (\a b c -> a + b + c) values (drop 1 values) (drop 2 values)
 
 -- * Tests
