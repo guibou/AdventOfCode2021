@@ -1,6 +1,7 @@
 module All where
 
 import Utils
+import Day01
 
 import Weigh
 
