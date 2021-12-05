@@ -5,7 +5,7 @@
 -- 12:10
 module Day05 where
 
-import qualified Data.Map as Map
+import qualified Data.HashMap.Strict as Map
 import qualified Data.Text as Text
 import Linear hiding (ex)
 import Relude.Unsafe
