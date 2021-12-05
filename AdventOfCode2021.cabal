@@ -88,7 +88,7 @@ library
 
 executable alltests
            main-is: MainAll.hs
-           other-modules: Day01, Day02, Day03, Day04
+           other-modules: Day01, Day02, Day03, Day04, Day05
            hs-source-dirs: src
 
            build-depends:
