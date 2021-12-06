@@ -21,7 +21,7 @@ step l = Map.fromListWith (+) $ do
      then [(6, n), (8, n)]
      else [((x-1), n)]
 
-solve n = sum . map snd . Map.toList . applyN n step . toMap
+solve n = sum . applyN n step . toMap
 
 -- * FIRST problem
 day :: [Int] -> Int
