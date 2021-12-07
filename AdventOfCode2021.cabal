@@ -15,7 +15,7 @@ extra-source-files:  README.md
 
 library
   hs-source-dirs:      src
-  exposed-modules:     All, Utils
+  exposed-modules:     All, Utils, Day01, Day02, Day03, Day04, Day05, Day06, Day07
   build-depends:       base,
                        hspec,
                        megaparsec,
@@ -88,7 +88,6 @@ library
 
 executable alltests
            main-is: MainAll.hs
-           other-modules: Day01, Day02, Day03, Day04, Day05, Day06
            hs-source-dirs: src
 
            build-depends:

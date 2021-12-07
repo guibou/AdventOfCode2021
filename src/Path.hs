@@ -5,7 +5,6 @@ module Path
   )
 where
 
-import Protolude
 import Utils
 
 import qualified Data.HashMap.Strict as HashMap
