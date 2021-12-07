@@ -227,3 +227,7 @@ resteChinois l = let
 applyN :: Int -> (a -> a) -> a -> a
 applyN 0 _ !x = x
 applyN n f !x = applyN (n - 1) f (f x)
+
+sum1ToN :: Integral a => a -> a
+sum1ToN n = (1 + n) * n `div` 2
+
