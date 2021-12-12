@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-time cabal run alltests -- --match "works" | grep 'Day\|Finished'
+cabal run alltests
+python bench.py > bench.txt
+gnuplot bench.gnuplot

@@ -10,6 +10,10 @@ Starts stack with `nix-shell --run 'cabal new-repl'` to start a session and `:l 
 
 # Benchmarks
 
-run ./bench.sh to generate a benchmark of all tests.
+run `./bench.sh` to generate a benchmark of all tests.
+
+the image `bench.png` here is the timing of all days:
+
+~[Benchmark results](bench.png)
 
 I'm targeting to run all problems in less than 1s.
