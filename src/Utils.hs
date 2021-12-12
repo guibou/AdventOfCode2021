@@ -5,6 +5,7 @@ module Utils (
   , HashMap
   , Vector
   , module Data.Function.Memoize
+  , module Linear
   , describe
   , it
   , Spec
@@ -18,7 +19,7 @@ module Utils (
   , fmt -- From PyF
   ) where
 
-import Linear
+import Linear hiding (ex, transpose)
 import Relude.Extra
 import qualified Relude.Unsafe as Unsafe
 

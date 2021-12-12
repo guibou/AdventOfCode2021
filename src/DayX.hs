@@ -31,9 +31,9 @@ day' = undefined
 -- test = do
 --   describe "simple examples" $ do
 --     it "of first star" $ do
---       day "" `shouldBe` 0
+--       day ex `shouldBe` 0
 --     it "of second star" $ do
---       day' "" `shouldBe` 0
+--       day' ex `shouldBe` 0
 --   describe "works" $ do
 --     it "on first star" $ do
 --       day fileContent `shouldBe` 1228
