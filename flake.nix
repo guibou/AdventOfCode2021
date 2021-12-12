@@ -18,7 +18,7 @@
                 besout = unmarkBroken (doJailbreak super.besout);
               };
           });
-        devShell = defaultPackage.overrideAttrs (old: {
+        devShell = defaultPackage.env.overrideAttrs (old: {
           buildInputs = [ pkgs.cabal-install pkgs.haskell-language-server ];
         });
       });
