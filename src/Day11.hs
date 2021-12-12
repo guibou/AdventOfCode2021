@@ -73,16 +73,6 @@ f' Flash _ = Flash
 f' _ Flash = Flash
 f' (EnergyLevel a) (EnergyLevel b) = EnergyLevel (a + b)
 
-display g = do
-  for_ [0..10] $ \l -> do
-    for_ [0..10] $ \c -> do
-      case Map.lookup (l, c) g of
-        Nothing -> putStr "X"
-        Just v -> putStr (show v)
-    putStrLn ""
-  
-
-
 -- * FIRST problem
 
 day :: _ -> Int

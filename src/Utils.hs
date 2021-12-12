@@ -241,3 +241,6 @@ connect8 = do
 
 connect4 :: Integral i => [V2 i]
 connect4 = [V2 0 0, V2 1 0, V2 0 1, V2 (-1) 0, V2 0 (-1)]
+
+tshow :: Show a => a -> Text
+tshow v = Text.pack (show v)
