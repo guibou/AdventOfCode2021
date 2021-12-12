@@ -11,28 +11,28 @@ import qualified Data.Map as Map
 fileContent :: _
 fileContent = parseContent $(getFile)
 
-parseContent :: Text -> Map (Int, Int) Int
+parseContent :: Text -> Map (V2 Int) Int
 parseContent t = Map.fromList $ do
   (lineIdx, l) <- zip [0..] (Text.lines t)
   (colIdx, c) <- zip [0..] (Text.unpack l)
 
-  pure ((lineIdx, colIdx), Unsafe.read [c])
+  pure (V2 lineIdx colIdx, Unsafe.read [c])
 
 -- * Generics
 data Status = EnergyLevel Int
             | Flash
             deriving (Show, Eq)
 
-step :: Map (Int, Int) Int -> (Map (Int, Int) Int, Int)
+step :: Map (V2 Int) Int -> (Map (V2 Int) Int, Int)
 step m = flashStep (fmap (+1) m)
 
 stepN m = newFlashThisStep:stepN m'
   where (m', newFlashThisStep) = step m
 
-flashStep :: Map (Int, Int) Int -> (Map (Int, Int) Int, Int)
+flashStep :: Map (V2 Int) Int -> (Map (V2 Int) Int, Int)
 flashStep octopusMap = finalizeFlash $ goFixpoint (statusMap, 0)
   where
-    finalizeFlash :: (Map (Int, Int) Status, Int) -> (Map (Int, Int) Int, Int)
+    finalizeFlash :: (Map (V2 Int) Status, Int) -> (Map (V2 Int) Int, Int)
     finalizeFlash (m, c) = (fmap toEnergyLevel m, c)
 
     statusMap = fmap EnergyLevel octopusMap
@@ -42,17 +42,17 @@ flashStep octopusMap = finalizeFlash $ goFixpoint (statusMap, 0)
       | otherwise = goFixpoint b
       where b = go a
 
-    go :: (Map (Int, Int) Status, Int) -> (Map (Int, Int) Status, Int)
+    go :: (Map (V2 Int) Status, Int) -> (Map (V2 Int) Status, Int)
     go (m, nbFlashs) = let
       isFlashing (EnergyLevel x) | x > 9 = True
       isFlashing _ = False
 
       flashing = Map.filter isFlashing m
       flashingCoords = do
-        flashingCoord@(x, y) <- Map.keys flashing
-        (dx, dy) <- connect8
+        flashingCoord <- Map.keys flashing
+        d <- connect8
 
-        let coord = (x + dx, y + dy)
+        let coord = flashingCoord + d
         guard $ coord `Map.member` m
 
         if coord == flashingCoord
@@ -65,7 +65,7 @@ toEnergyLevel :: Status -> Int
 toEnergyLevel (EnergyLevel i)= i
 toEnergyLevel Flash = 0
 
-f :: Map (Int, Int) Status -> ((Int, Int), Status) -> Map (Int, Int) Status
+f :: Map (V2 Int) Status -> ((V2 Int), Status) -> Map (V2 Int) Status
 f m (coord, status) = Map.insertWith f' coord status m
 
 f' :: Status -> Status -> Status

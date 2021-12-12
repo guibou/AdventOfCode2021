@@ -232,12 +232,12 @@ applyN n f !x = applyN (n - 1) f (f x)
 sum1ToN :: Integral a => a -> a
 sum1ToN n = (1 + n) * n `div` 2
 
-connect8 :: Integral i => [(i, i)]
+connect8 :: Integral i => [V2 i]
 connect8 = do
   dx <- [0, 1, -1]
   dy <- [0, 1, -1]
 
-  pure (dx, dy)
+  pure $ V2 dx dy
 
-connect4 :: Integral i => [(i, i)]
-connect4 = [(0, 0), (1, 0), (0, 1), (-1, 0), (0, -1)]
+connect4 :: Integral i => [V2 i]
+connect4 = [V2 0 0, V2 1 0, V2 0 1, V2 (-1) 0, V2 0 (-1)]
