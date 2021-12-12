@@ -6,7 +6,6 @@ module Day09 where
 
 import Utils
 import qualified Relude.Unsafe as Unsafe
-import qualified Data.Text as Text
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 
@@ -14,15 +13,7 @@ fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> Map (V2 Int) Int
-parseContent t = Map.fromList $ do
-  (lineIdx, l) <- zip [0..] lli
-  (columnIdx, c) <- zip [0..] l
-
-  pure (V2 lineIdx columnIdx, c)
-
-  where
-    toHeight c = Unsafe.read [c]
-    lli = map (map toHeight . Text.unpack) . Text.lines $ t
+parseContent = parse2DGrid (\c -> Unsafe.read [c])
 
 -- * Generics
 

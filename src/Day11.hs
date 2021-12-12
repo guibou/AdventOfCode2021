@@ -5,18 +5,13 @@ module Day11 where
 
 import Utils
 import qualified Relude.Unsafe as Unsafe
-import qualified Data.Text as Text
 import qualified Data.Map as Map
 
 fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> Map (V2 Int) Int
-parseContent t = Map.fromList $ do
-  (lineIdx, l) <- zip [0..] (Text.lines t)
-  (colIdx, c) <- zip [0..] (Text.unpack l)
-
-  pure (V2 lineIdx colIdx, Unsafe.read [c])
+parseContent = parse2DGrid (\c -> Unsafe.read [c])
 
 -- * Generics
 data Status = EnergyLevel Int

@@ -16,7 +16,7 @@ module Utils (
   , hereLit
   , chunksOf
   , genum, GEnum
-  , fmt -- From PyF
+  , module PyF
   ) where
 
 import Linear hiding (ex, transpose)
@@ -127,16 +127,22 @@ unsafeParse p s = case parse (p <* eof) "" s of
 unsafeRead :: Read t => Text -> t
 unsafeRead = Unsafe.fromJust . readMaybe . Text.unpack
 
-parse2D :: (Text -> a) -> Text -> [[a]]
-parse2D f s = map (map f . Text.words) (Text.lines s)
-
 unsafeRead2D :: Read t => Text -> [[t]]
 unsafeRead2D = parse2D unsafeRead
 
 unsafeRead1D :: Read t => Text -> [t]
 unsafeRead1D = map unsafeRead . Text.words
 
-parse2DGrid :: (Text -> a) -> Text -> Map (V2 Int) a
+class SplitLine b where
+  parse2D :: (b -> a) -> Text -> [[a]]
+
+instance SplitLine Text where
+  parse2D f s = map (map f . Text.words) (Text.lines s)
+
+instance SplitLine Char where
+  parse2D f s = map (map f . Text.unpack)(Text.lines s)
+
+parse2DGrid :: SplitLine b => (b -> a) -> Text -> Map (V2 Int) a
 parse2DGrid f t = Map.fromList $ do
   (y, l) <- zip [0..] (parse2D f t)
   (x, v) <- zip [0..] l

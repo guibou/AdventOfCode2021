@@ -23,7 +23,7 @@ day' values = day $ zipWith3 (\a b c -> a + b + c) values (drop 1 values) (drop 
 
 testContent =
   parseContent
-    [fmt|
+    [str|
 199
 200
 208

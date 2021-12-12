@@ -2,8 +2,9 @@
   description = "AoC 2021";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.PyF.url = "github:guibou/PyF";
 
-  outputs = { self, nixpkgs, flake-utils}:
+  outputs = { self, nixpkgs, flake-utils, PyF}:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system};
       in
@@ -14,7 +15,7 @@
             root = ./.;
             overrides = self: super:
               {
-                PyF = unmarkBroken (dontCheck super.PyF);
+                PyF = pkgs.haskellPackages.callCabal2nix "PyF" PyF {};
                 besout = unmarkBroken (doJailbreak super.besout);
               };
           });
