@@ -4,7 +4,6 @@
 module Day07 where
 
 import Utils
-import qualified Relude.Unsafe as Unsafe
 import qualified Data.Text as Text
 import Data.Foldable (minimumBy, Foldable (maximum))
 
@@ -12,7 +11,7 @@ fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> [Int]
-parseContent = map (Unsafe.read . Text.unpack) . Text.splitOn ","
+parseContent = map unsafeRead . Text.splitOn ","
 
 -- * Generics
 fuelCost costF l = sum $ map costF l

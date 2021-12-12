@@ -1,7 +1,6 @@
 module Day06 where
 
 import Utils
-import qualified Relude.Unsafe as Unsafe
 import qualified Data.Text as Text
 import qualified Data.Map as Map
 
@@ -9,7 +8,7 @@ fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> [Int]
-parseContent = map (Unsafe.read . Text.unpack) . Text.splitOn ","
+parseContent = map unsafeRead . Text.splitOn ","
 
 toMap l = Map.fromListWith (+) (map (,1) l)
 
