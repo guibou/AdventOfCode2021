@@ -50,8 +50,7 @@ flashStep octopusMap = finalizeFlash $ goFixpoint (statusMap, 0)
       flashing = Map.filter isFlashing m
       flashingCoords = do
         flashingCoord@(x, y) <- Map.keys flashing
-        dx <- [-1..1]
-        dy <- [-1..1]
+        (dx, dy) <- connect8
 
         let coord = (x + dx, y + dy)
         guard $ coord `Map.member` m

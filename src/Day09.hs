@@ -6,11 +6,9 @@ module Day09 where
 
 import Utils
 import qualified Relude.Unsafe as Unsafe
-import Relude.Extra
 import qualified Data.Text as Text
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-import Text.Megaparsec
 
 fileContent :: _
 fileContent = parseContent $(getFile)
@@ -35,7 +33,7 @@ foo m = do
 
   let 
       adjacentHeights = do
-         (dx, dy) <- [(-1, 0), (1, 0), (0, -1), (0, 1)]
+         (dx, dy) <- drop 1 connect4
          let coord = (x + dx, y + dy)
          case Map.lookup coord m of
            Nothing -> []
