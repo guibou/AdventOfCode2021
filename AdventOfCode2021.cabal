@@ -15,7 +15,7 @@ extra-source-files:  README.md
 
 library
   hs-source-dirs:      src
-  exposed-modules:     All, Utils, Day01, Day02, Day03, Day04, Day05, Day06, Day07, Day08, Day09, Day10, Day11, Day12
+  exposed-modules:     All, Utils, Day01, Day02, Day03, Day04, Day05, Day06, Day07, Day08, Day09, Day10, Day11, Day12, Day13
   build-depends:       base,
                        hspec,
                        megaparsec,
