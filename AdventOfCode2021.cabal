@@ -15,7 +15,7 @@ extra-source-files:  README.md
 
 library
   hs-source-dirs:      src
-  exposed-modules:     All, Utils, Day01, Day02, Day03, Day04, Day05, Day06, Day07, Day08, Day09, Day10, Day11, Day12, Day13
+  exposed-modules:     All, Utils, Day01, Day02, Day03, Day04, Day05, Day06, Day07, Day08, Day09, Day10, Day11, Day12, Day13, Day14
   build-depends:       base,
                        hspec,
                        megaparsec,
@@ -53,7 +53,8 @@ library
                        generic-lens,
                        QuickCheck,
                        parser-combinators,
-                       Earley
+                       Earley,
+                       monoidal-containers
 
   default-extensions: TupleSections
                     , DeriveAnyClass
@@ -153,7 +154,8 @@ executable alltests
                        generic-lens,
                        QuickCheck,
                        parser-combinators,
-                       Earley
+                       Earley,
+                       monoidal-containers
   -- Set relude (with extra) as the default prelude
   mixins: base hiding (Prelude)
         , relude (Relude as Prelude
