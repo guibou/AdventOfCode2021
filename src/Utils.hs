@@ -19,7 +19,7 @@ module Utils (
   , module PyF
   ) where
 
-import Linear hiding (ex, transpose)
+import Linear hiding (ex, transpose, trace)
 import Relude.Extra
 import qualified Relude.Unsafe as Unsafe
 
