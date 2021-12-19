@@ -5,8 +5,8 @@
 -- second star 17:14
 module Day17 where
 
-import Utils
 import Data.List
+import Utils
 
 -- target area: x=207..263, y=-115..-63
 fileContent = ((207, 263), (-115, -63))
@@ -31,7 +31,12 @@ step (Probe p v@(V2 vx vy)) = Probe p' v'
 
 inArea (Probe (V2 x y) _) ((xmin, xmax), (ymin, ymax)) = x >= xmin && x <= xmax && y >= ymin && y <= ymax
 
-missed (Probe (V2 _ y) _) (_, (ymin, _)) = y < ymin
+missed (Probe (V2 x y) (V2 vx _vy)) ((xmin, xmax), (ymin, _)) =
+  or
+    [ y < ymin,
+      vx > 0 && x > xmax,
+      (x + sum1ToN vx) < xmin
+    ]
 
 -- * FIRST problem
 
@@ -48,12 +53,18 @@ hitOrMiss probe bounds mY
 
 solve bounds@((_, xMax), (yMin, _)) = do
   -- Initial velocity must be:
-  -- for X: positive (>= 1) (otherwise it will never reach the positive area. Also, never bigger than xmax
+  --
   -- for Y: positive (>= 1) (otherwise, it will never go up, hehe ;)
   -- second star, it can actually be negative
-  --
-  -- TODO: the maximum value for yMin is arbitrary...
-  vy <- [yMin .. 1000]
+  -- The maximum for Y is computed as such:
+  -- It will climb as much as sum [1..vy] before starting the descent. Then it
+  -- will descend on sum [1.. nstep] = ... TBT
+  -- TODO: I hate this 120, I need to compute the correct value
+  vy <- [yMin ..120]
+
+  -- for X: positive (>= 1) (otherwise it will never reach the positive area. Also, never bigger than xmax
+  -- If vy is positive, then we can easily find a minimum bound for vx (i.e. sum [1..minBound] < xmin)
+  -- However, that's not super important for performances, because we also have to work with the y min
   vx <- [1 .. xMax + 1]
 
   let v = V2 vx vy
@@ -63,6 +74,7 @@ solve bounds@((_, xMax), (yMin, _)) = do
     Just vMax -> pure (vMax)
 
 -- * Tests
+
 day = maximum . solve
 
 day' = length . solve
@@ -87,3 +99,4 @@ test = do
 
 -- This solution sucks, because there is an arbitrary maxmimu value and it takes hours.
 -- This kills my performances, I'll have to go back on the solution later
+-- --> Done
