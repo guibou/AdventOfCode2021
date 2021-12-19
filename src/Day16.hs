@@ -6,6 +6,7 @@ module Day16 where
 import Data.List (maximum, minimum)
 import qualified Data.Text as Text
 import Utils
+import Prelude hiding (group)
 
 fileContent :: _
 fileContent = parseContent $(getFile)
@@ -58,23 +59,21 @@ decode :: [Bool] -> (Packet, [Bool])
 decode bits =
   let (version, rest) = splitAt 3 bits
       (packedId, rest') = splitAt 3 rest
-   in let (packet, rest) = case packedId of
-            [T, F, F] -> decodeLiteral rest'
-            op -> decodeOperator (boolToInt op) rest'
-       in (Packet (boolToInt version) packet, rest)
+      (packet, rest'') = case packedId of
+        [T, F, F] -> decodeLiteral rest'
+        op -> decodeOperator (boolToInt op) rest'
+   in (Packet (boolToInt version) packet, rest'')
 
-decodeLiteral bits =
-  let (lit, rest) = go bits
-   in (Literal (boolToInt lit), rest)
+decodeLiteral bits' = (Literal (boolToInt lit), leftover)
   where
+    (lit, leftover) = go bits'
     go bits
-      | continue =
-        let (group', rest') = go rest
-         in (group <> group', rest')
+      | continue = first (group<>) $ go rest
       | otherwise = (group, rest)
       where
         (continue : group, rest) = splitAt 5 bits
 
+decodeOperator _ [] = error "Empty operator"
 decodeOperator op (lengthTypeId : bits) =
   case lengthTypeId of
     False ->
@@ -119,7 +118,7 @@ day = sumVersions . fst . decode
 -- * SECOND problem
 
 evalPacket :: Packet -> Int
-evalPacket (Packet v sub) = evalPacketTree sub
+evalPacket (Packet _ sub) = evalPacketTree sub
 
 evalPacketTree e = case e of
   Literal i -> i
@@ -133,6 +132,7 @@ evalOp 3 l = maximum l
 evalOp 5 [a, b] = if a > b then 1 else 0
 evalOp 6 [a, b] = if a < b then 1 else 0
 evalOp 7 [a, b] = if a == b then 1 else 0
+evalOp _ _ = error "Unknown operator"
 
 day' :: _ -> Int
 day' = evalPacket . fst . decode

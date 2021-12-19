@@ -2,20 +2,17 @@
 -- pause at 18:19. I'm close to completion, but there is a bug ;)
 -- I started again at 21:00, and at 00:00 I found the first star. I'm frustrated by my poor understanding of the rules
 -- done at 00:20, the code is ugly, because I copy pasted by mega recursion in two different recursions.
-module Day18 (test) where
+module Day18 where
 
-import qualified Relude.Unsafe as Unsafe
 import Utils
 import GHC.List (maximum)
+import Data.Foldable (foldl1)
 
 fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> _
 parseContent = unsafeParse (some (parsePairs <* "\n"))
-
--- Parse only one item
-parseContent1 t = Unsafe.head $ parseContent (t <> "\n")
 
 parsePairs = do
   void "["
@@ -120,6 +117,7 @@ openingAt 2 = '<'
 openingAt 3 = '('
 openingAt 4 = '\\'
 openingAt 5 = '@'
+openingAt _ = error "Too deep"
 
 closingAt 0 = ']'
 closingAt 1 = '}'
@@ -127,6 +125,7 @@ closingAt 2 = '>'
 closingAt 3 = ')'
 closingAt 4 = '/'
 closingAt 5 = '#'
+closingAt _ = error "Too deep"
 
 day' l = maximum $ do
   (a, l') <- select l
@@ -158,8 +157,7 @@ exList =
 [6,6]\
 |]
 
-adds [x] = x
-adds (x : y : xs) = adds ((addPair x y) : xs)
+adds = foldl1 addPair
 
 magnitude (Single v) = v
 magnitude (Pair a b) = 3 * magnitude a + 2 * magnitude b
@@ -196,8 +194,6 @@ largerExample =
 
 sumTree (Single a) = a
 sumTree (Pair a b) = sumTree a + sumTree b
-
-addEx = addPair (parseContent1 "[[[[4,3],4],4],[7,[[8,4],9]]]\n") (parseContent1 "[1,1]\n")
 
 test :: Spec
 test = do

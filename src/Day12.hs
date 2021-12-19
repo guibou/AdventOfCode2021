@@ -16,7 +16,7 @@ fileContent = parseContent $(getFile)
 parseContent :: Text -> _
 parseContent t = Map.fromListWith (++) $ do
   edge <- Text.lines t
-  let [a, b] = Text.splitOn "-" edge
+  let (a, b) = unsafeSplitOn2 "-" edge
   
   [(a, [b]), (b, [a])]
 

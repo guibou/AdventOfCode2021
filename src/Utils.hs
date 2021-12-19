@@ -250,3 +250,8 @@ connect4 = [V2 0 0, V2 1 0, V2 0 1, V2 (-1) 0, V2 0 (-1)]
 
 tshow :: Show a => a -> Text
 tshow v = Text.pack (show v)
+
+unsafeSplitOn2 :: HasCallStack => Text -> Text -> (Text, Text)
+unsafeSplitOn2 needle t = case Text.splitOn needle t of
+                      [a, b] -> (a, b)
+                      _ -> error "splitOn2 did not returned 2 items"

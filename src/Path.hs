@@ -5,16 +5,8 @@ module Path
   )
 where
 
-import Utils
-
 import qualified Data.HashMap.Strict as HashMap
-import Data.HashMap.Strict (HashMap)
-
 import qualified Data.HashSet as HashSet
-import Data.HashSet (HashSet)
-
-import Data.Foldable (foldl')
-
 import qualified Data.PQueue.Prio.Min as Queue
 
 -- | find the shortest path in a graph

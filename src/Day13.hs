@@ -3,7 +3,7 @@
 -- end: 10:21
 module Day13 where
 
-import Control.Applicative.Combinators.NonEmpty as CACN (sepBy1, some)
+import Control.Applicative.Combinators.NonEmpty as CACN (some)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Text.Megaparsec hiding (sepBy1)

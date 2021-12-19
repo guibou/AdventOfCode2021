@@ -22,7 +22,7 @@ parseContent t =
    in (Text.unpack header, MapMonoidal.fromList $ map parseLine ls)
 
 parseLine t =
-  let [Text.unpack -> [a, c], Text.unpack -> [b]] = Text.splitOn " -> " t
+  let (Text.unpack -> [a, c], Text.unpack -> [b]) = unsafeSplitOn2 " -> " t
    in ((a, c), b)
 
 -- * Generics

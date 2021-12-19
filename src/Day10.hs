@@ -21,6 +21,7 @@ closingOf '<' = '>'
 closingOf '(' = ')'
 closingOf '{' = '}'
 closingOf '[' = ']'
+closingOf _ = error "This parent does not exists"
 
 -- * Generics
 validLine l = go [] l
@@ -42,8 +43,9 @@ score = \case
   SyntaxError ']' -> 57
   SyntaxError '}' -> 1197
   SyntaxError '>' -> 25137
+  SyntaxError _ -> error "This char does not exists"
 
-scoreCompletionString = go 0 
+scoreCompletionString = go (0 :: Int) 
   where
     go s [] = s
     go s (x:xs) = go (5 * s + scoreChar x) xs
@@ -52,6 +54,7 @@ scoreCompletionString = go 0
     scoreChar ']' = 2
     scoreChar '}' = 3
     scoreChar '>' = 4
+    scoreChar _ = error "This char does not exists"
 
 score' = \case
   Valid -> 0

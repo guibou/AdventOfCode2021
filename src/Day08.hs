@@ -13,9 +13,9 @@ import Utils
 fileContent :: _
 fileContent = parseContent $(getFile)
 
-parseContent = map (f . Text.splitOn " | ") . Text.lines
+parseContent = map (f . unsafeSplitOn2 " | ") . Text.lines
   where
-    f [a, b] = (Text.words a, Text.words b)
+    f (a, b) = (Text.words a, Text.words b)
 
 -- * Generics
 
@@ -59,9 +59,9 @@ day' = sum . map decodeLine
 decodeLine :: ([Text], [Text]) -> Int
 decodeLine (l, numbers) = Unsafe.read $ concatMap show digits
   where
-    Just validPerm = findAValidPerm (map (Set.fromList . Text.unpack) l)
+    validPerm = Unsafe.fromJust $ findAValidPerm (map (Set.fromList . Text.unpack) l)
     patterns = map (applyPerm validPerm . Set.fromList . Text.unpack) numbers
-    digits = map (\((`Data.List.elemIndex` digitsPatterns) -> Just i) -> i) patterns
+    digits = map (\(Unsafe.fromJust . (`Data.List.elemIndex` digitsPatterns)-> i) -> i) patterns
 
 -- * Tests
 

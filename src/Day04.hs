@@ -15,7 +15,9 @@ fileContent = parseContent $(getFile)
 
 parseContent :: Text -> ([Int], _)
 parseContent content = do
-  let (header : rest) = Text.lines content
+  let (header, rest) = case Text.lines content of
+                         (h:r) -> (h, r)
+                         _ -> error "WTF"
 
   let numbers = map (chunksOf 5) . chunksOf 25 $ map (read @Int . Text.unpack) $ Text.words (Text.unlines rest)
 

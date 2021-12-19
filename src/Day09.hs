@@ -54,7 +54,7 @@ f m (alreadyVisited, foundBassinSizes) newCoord
                  in (alreadyVisited `Set.union` bassin, length bassin : foundBassinSizes)
 
 growBassin :: Map (V2 Int) Int -> (V2 Int) -> Set (V2 Int)
-growBassin m coord = go coord Set.empty 
+growBassin m = flip go Set.empty 
   where
     go :: (V2 Int) -> Set (V2 Int) -> Set (V2 Int)
     go coord visited

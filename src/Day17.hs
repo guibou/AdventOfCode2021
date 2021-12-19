@@ -60,10 +60,11 @@ solve bounds@((_, xMax), (yMin, _)) = do
 
   case hitOrMiss (Probe (V2 0 0) v) bounds 1 of
     Nothing -> []
-    Just vMax -> pure (v, vMax)
+    Just vMax -> pure (vMax)
 
 -- * Tests
-day = maximum . map snd . solve
+day = maximum . solve
+
 day' = length . solve
 
 ex :: ((Int, Int), (Int, Int))

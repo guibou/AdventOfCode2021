@@ -30,6 +30,7 @@ toEpsilon = map f'
 
 f' '1' = '0'
 f' '0' = '1'
+f' _ = error "WTF"
 
 rates e =
   let value = map countLine (transpose e)
@@ -45,24 +46,28 @@ day = uncurry (\x y -> toDec x * toDec y) . rates
 recMatchPrefix f e = go (zip e e)
   where
     go [(x, _)] = x
-    go l = go (map (\(res, crit) -> (res, drop 1 crit)) (filter (test . snd) l))
+    go l = go (map (\(res, crit') -> (res, drop 1 crit')) (filter (t . snd) l))
       where
-        test (x : _) = x == f crit
+        t (x : _) = x == f crit
+        t _ = error "WTF"
+
         crit = countLine $ case transpose (map snd l) of
           (x : _) -> x
+          _ -> error "WTF"
 
 -- * SECOND problem
 
 day' :: _ -> _
-day' e = let (toDec -> a, toDec -> b) = (recMatchPrefix id e, recMatchPrefix f' e)
-         in a * b
-    
+day' e =
+  let (toDec -> a, toDec -> b) = (recMatchPrefix id e, recMatchPrefix f' e)
+   in a * b
 
 -- * Tests
 
 ex =
   parseContent
-    [fmt|00100
+    [str|\
+00100
 11110
 10110
 10111

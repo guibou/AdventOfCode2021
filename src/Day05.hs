@@ -19,7 +19,7 @@ parseContent content = map ((\[(Text.unpack -> a), (Text.unpack -> b)] -> (readV
 
 readVec :: String -> V2 Int
 readVec s =
-  let [a, b] = (Text.splitOn "," . Text.pack $ s)
+  let (a, b) = (unsafeSplitOn2 "," . Text.pack $ s)
    in V2 (read $ Text.unpack a) (read $ Text.unpack b)
 
 -- * Generics
