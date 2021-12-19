@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cabal run alltests
+cabal build alltests
 python bench.py > bench.txt
 gnuplot bench.gnuplot
 
