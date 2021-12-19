@@ -10,7 +10,6 @@ import Text.Megaparsec
 import Utils
 import Data.List (maximum)
 import qualified Relude.Unsafe as Unsafe
-
 fileContent :: _
 fileContent = parseContent $(getFile)
 
@@ -49,7 +48,7 @@ rotMat = do
 -- * FIRST problem
 
 matchScanners scanner scanner' = Map.keys $
-  Map.filter (>= 12) $
+  Map.filter (>= (12 :: Int)) $
     Map.fromListWith (+) $ do
       coord <- scanner
       coord' <- scanner'
@@ -64,6 +63,7 @@ matchScannerWithRot scanner scanner' = do
   case matchScanners scanner ((fmap (*! rotM) scanner')) of
     [] -> []
     [doffset] -> pure (doffset, rotM)
+    _ -> error "WTF"
 
 fiz l = do
   (scanN, beacons) <- l
@@ -76,8 +76,9 @@ fiz l = do
     [(doffset, rotM)] ->
       [ ((scanN, scanN'), (doffset, rotM))
       ]
+    _ -> error "WTF"
 
-invI m = fmap truncate <$> (inv33 (fmap fromIntegral <$> m))
+invI m = fmap (truncate @Double) <$> (inv33 (fmap fromIntegral <$> m))
 
 changeFrame (doffset, rotM) scanner' = fmap (a . b) scanner'
   where
@@ -90,11 +91,11 @@ stupidApplyFoo :: [(Int, [V3 Int])] -> (Int, Int)
 stupidApplyFoo l =
   let fizData = fiz l
       fizMap = Map.fromList fizData
-      (nStart, Set.fromList -> set0):others = l
+      ((nStart, Set.fromList -> set0), others) = unsafeUncons l
       bizu = do
               (number, beacons) <- others
-              let Just (_, path) = pathTo nStart number (map fst fizData)
-              let [dx] = applyTrans fizMap path number [(V3 0 0 0)]
+              let path = Unsafe.fromJust $ pathTo nStart number (map fst fizData)
+              let dx = Unsafe.head $ applyTrans fizMap path number [(V3 0 0 0)]
               pure $ (dx, Set.fromList (applyTrans fizMap path number beacons))
 
       dists = do
@@ -105,9 +106,9 @@ stupidApplyFoo l =
 
   in (length $ Set.union set0 $ Set.unions $ map snd bizu, maximum dists)
 
-pathTo nStart n l = shortestPath nextVertex (+) n nStart
+pathTo nStart n l = snd <$> shortestPath nextVertex (+) n nStart
   where
-    nextVertex a = map (1,) $ map snd $ (filter (\(x, _) -> x == a)) l
+    nextVertex a = map (1 :: Int,) $ map snd $ (filter (\(x, _) -> x == a)) l
 
 applyTrans :: Map (Int, Int) _ -> [Int] -> Int -> [V3 Int] -> [V3 Int]
 applyTrans _ [] _ beacons = beacons

@@ -17,12 +17,22 @@ fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> _
-parseContent t =
-  let (header : _ : ls) = Text.lines t
-   in (Text.unpack header, MapMonoidal.fromList $ map parseLine ls)
+parseContent t = case Text.lines t of
+  (header : _ : ls) -> (Text.unpack header, MapMonoidal.fromList $ map parseLine ls)
+  _ -> error "Unable to parse"
+
+unpack2C t =
+  case Text.unpack t of
+    [a, c] -> (a, c)
+    _ -> error "Cannot unpack 2 chars from a text"
+
+unpack1C t =
+  case Text.unpack t of
+    [a] -> a
+    _ -> error "Cannot unpack 1 chars from a text"
 
 parseLine t =
-  let (Text.unpack -> [a, c], Text.unpack -> [b]) = unsafeSplitOn2 " -> " t
+  let (unpack2C -> (a, c), unpack1C -> b) = unsafeSplitOn2 " -> " t
    in ((a, c), b)
 
 -- * Generics

@@ -255,3 +255,5 @@ unsafeSplitOn2 :: HasCallStack => Text -> Text -> (Text, Text)
 unsafeSplitOn2 needle t = case Text.splitOn needle t of
                       [a, b] -> (a, b)
                       _ -> error "splitOn2 did not returned 2 items"
+
+unsafeUncons = Unsafe.fromJust . uncons

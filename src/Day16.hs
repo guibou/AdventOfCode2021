@@ -71,7 +71,7 @@ decodeLiteral bits' = (Literal (boolToInt lit), leftover)
       | continue = first (group<>) $ go rest
       | otherwise = (group, rest)
       where
-        (continue : group, rest) = splitAt 5 bits
+        (unsafeUncons -> (continue, group), rest) = splitAt 5 bits
 
 decodeOperator _ [] = error "Empty operator"
 decodeOperator op (lengthTypeId : bits) =

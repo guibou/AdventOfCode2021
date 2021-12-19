@@ -15,7 +15,7 @@ fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> [(V2 Int, V2 Int)]
-parseContent content = map ((\[(Text.unpack -> a), (Text.unpack -> b)] -> (readVec a, readVec b)) . (Text.splitOn " -> ")) . Text.lines $ content
+parseContent content = map ((\(Text.unpack -> a, Text.unpack -> b) -> (readVec a, readVec b)) . (unsafeSplitOn2 " -> ")) . Text.lines $ content
 
 readVec :: String -> V2 Int
 readVec s =
