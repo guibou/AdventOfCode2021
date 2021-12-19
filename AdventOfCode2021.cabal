@@ -96,6 +96,7 @@ executable alltests
                base
                , text
                , weigh
+               , AdventOfCode2021
   default-language:    Haskell2010
   default-extensions: TupleSections
                     , DeriveAnyClass
