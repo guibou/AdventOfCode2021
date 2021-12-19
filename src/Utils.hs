@@ -100,7 +100,7 @@ zipIndex v = V.zip (V.enumFromN 0 (V.length v)) v
 type Parser t = Parsec Void Text t
 
 sc :: Parser ()
-sc = L.space (() <$ spaceChar) lineCmnt blockCmnt
+sc = L.space (() <$ char ' ') lineCmnt blockCmnt
   where
     lineCmnt  = L.skipLineComment "//"
     blockCmnt = L.skipBlockComment "/*" "*/"

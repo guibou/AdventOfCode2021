@@ -28,7 +28,7 @@ parseLine = do
   n <- parseNumber
   pure (d, n)
   
-parseContent' = Prelude.some parseLine
+parseContent' = Prelude.some (parseLine <* (void "\n" <|> eof))
 -- * Generics
 moveSubmarine (depth, horizontal) = \case
   (Forward, dh) -> (depth, horizontal + dh)

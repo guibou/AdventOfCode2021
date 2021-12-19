@@ -3,17 +3,24 @@
 -- end: 10:21
 module Day13 where
 
-import Control.Applicative.Combinators.NonEmpty as CACN (some)
+import Control.Applicative.Combinators.NonEmpty as CACN (sepBy1, some)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-import Text.Megaparsec
+import Text.Megaparsec hiding (sepBy1)
 import Utils
 
 fileContent :: _
 fileContent = parseContent $(getFile)
 
 parseContent :: Text -> _
-parseContent = unsafeParse (((,) <$> (Set.fromList <$> Prelude.some parseV2) <*> CACN.some parseFold))
+parseContent =
+  unsafeParse
+    ( ( (,) <$> (Set.fromList <$> (Prelude.some (parseV2 <* "\n")))
+          <*> ( "\n"
+                  *> (CACN.some (parseFold <* (void "\n" <|> eof)))
+              )
+      )
+    )
 
 parseFold = do
   _ <- "fold along "
