@@ -8,6 +8,7 @@ import qualified Data.Map as Map
 import qualified Data.Text as Text
 import Utils
 import Control.Lens
+import qualified Data.Vector.Unboxed as Vector
 
 fileContent :: _
 fileContent = parseContent $(getFile)
@@ -15,7 +16,7 @@ fileContent = parseContent $(getFile)
 parseContent :: Text -> _
 parseContent t =
   let (Text.replace "\n" "" -> algo, Text.drop 2 -> image) = Text.breakOn "\n\n" t
-   in (algo, parse2DGrid (\c -> if c == '#' then True else False) image, False)
+   in (Vector.fromList $ map (\case {'#' -> True; _ -> False}) $ Text.unpack algo, parse2DGrid (\c -> if c == '#' then True else False) image, False)
 
 -- * Generics
 
@@ -34,19 +35,16 @@ toBinary = foldl' f 0
   where
     f acc v = acc * 2 + bool 0 1 v
 
-getPixelValue coord (algo, image, stepParity) = case Text.index algo (toBinary offset) of
-  '#' -> True
-  '.' -> False
-  e -> error [fmt|WTF {e:d}|]
+getPixelValue coord (algo, image, stepParity) = (Vector.!) algo offset
   where
-    offset = do
+    offset = toBinary $ do
       dy <- [-1 .. 1]
       dx <- [-1 .. 1]
       let delta = V2 dx dy
       let v = case Map.lookup (coord + delta) image of
             -- A case which does not exists is considered off or on, depending
             -- on the parity of the step
-            Nothing -> (stepParity && Text.index algo 0 == '#')
+            Nothing -> (stepParity && (Vector.!) algo 0)
             -- If it exists, it does have a value
             Just r -> r
       pure v
