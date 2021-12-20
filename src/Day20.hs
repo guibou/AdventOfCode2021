@@ -7,7 +7,7 @@ module Day20 where
 import Control.Lens
 import Data.Bits
 import qualified Data.Map as Map
-import qualified Data.Set as Set
+import qualified Data.HashSet as Set
 import qualified Data.Text as Text
 import Utils
 
@@ -19,7 +19,7 @@ parseContent t =
   let (Text.replace "\n" "" -> algo, Text.drop 2 -> image) = Text.breakOn "\n\n" t
       grid = parse2DGrid id image
    in ( toBitInteger $ map (\case '#' -> True; _ -> False) $ Text.unpack algo,
-        Map.keysSet (Map.filter (== '#') grid),
+        Set.fromList $ Map.keys (Map.filter (== '#') grid),
         getBounds (Map.keys grid),
         False
       )
@@ -33,7 +33,6 @@ toBitInteger l = foldl' f zeroBits (zip [0 ..] l)
       | b = bitset .|. bit i
       | otherwise = bitset
 
-enhance :: (Integer, Set (V2 Int), (V2 Int, V2 Int), Bool) -> (Integer, Set (V2 Int), (V2 Int, V2 Int), Bool)
 enhance (algo, image, bounds, stepParity) = (algo,,newBounds,not stepParity) $
   Set.fromList $ do
     x <- [xMin - 1 .. xMax + 1]
