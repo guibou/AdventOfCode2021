@@ -1,5 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
+
 module Day21 where
+
+import Data.HashMap.Strict as HashMap
 import Test.Hspec
 import Utils
 
@@ -11,7 +14,7 @@ data Player = Player
   { position :: Int,
     score :: Int
   }
-  deriving (Show)
+  deriving (Show, Eq, Hashable, Generic)
 
 deriveMemoizable ''Player
 
@@ -35,15 +38,16 @@ day = go 0 infiniteDice
 
 -- * SECOND problem
 
-day' ps = let V2 a b = goMemo ps in max a b
+day' ps = let V2 a b = fst $ go ps mempty in max a b
   where
-    goMemo = memoFix go
-    go f (p0, p1)
-      | score p1 >= 21 = V2 (0 :: Int) 1
-      | otherwise = swapV2 $
-        sum $ do
-          delta <- allQuantumDicesSums
-          pure $ f (p1, playerStep delta p0)
+    go (p0, p1) cache
+      | Just res <- HashMap.lookup (p0, p1) cache = (res, cache)
+      | score p1 >= 21 = (V2 (0 :: Int) 1, cache)
+      | otherwise =
+        let (res, cache') = first swapV2 $ Prelude.foldl' fFold (V2 0 0, cache) allQuantumDicesSums
+         in (res, HashMap.insert (p0, p1) res cache')
+      where
+        fFold (scores, c) delta = first (+scores) $ go (p1, playerStep delta p0) c
 
 swapV2 (V2 a b) = V2 b a
 
