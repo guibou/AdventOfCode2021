@@ -34,20 +34,25 @@ day = go 0 infiniteDice
       | otherwise = go (nbRolls + 3) dice (p1, playerStep delta p0)
 
 -- * SECOND problem
+
 day' ps = let V2 a b = goMemo ps in max a b
   where
     goMemo = memoFix go
     go f (p0, p1)
       | score p1 >= 21 = V2 (0 :: Int) 1
-      | otherwise = swapV2 $ sum $ do
-         dice1 <- [1..3]
-         dice2 <- [1..3]
-         dice3 <- [1..3]
-
-         let delta = dice1 + dice2 + dice3
-         pure $ f (p1, playerStep delta p0)
+      | otherwise = swapV2 $
+        sum $ do
+          delta <- allQuantumDicesSums
+          pure $ f (p1, playerStep delta p0)
 
 swapV2 (V2 a b) = V2 b a
+
+allQuantumDicesSums = do
+  dice1 <- [1 .. 3]
+  dice2 <- [1 .. 3]
+  dice3 <- [1 .. 3]
+
+  pure $ dice1 + dice2 + dice3
 
 -- * Tests
 
