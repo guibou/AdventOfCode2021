@@ -1,10 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Day21 where
 
-import Data.HashMap.Strict as HashMap
+import qualified Data.HashMap.Strict as HM
 import Test.Hspec
 import Utils
+import Control.Monad.Memo
 
 fileContent = (Player 2 0, Player 7 0)
 
@@ -38,19 +41,17 @@ day = go 0 infiniteDice
 
 -- * SECOND problem
 
-day' ps = let V2 a b = fst $ go ps mempty in max a b
+day' ps = let V2 a b = (evalMemoState (go ps) HM.empty) in max a b
   where
-    go (p0, p1) cache
-      | Just res <- HashMap.lookup (p0, p1) cache = (res, cache)
-      | score p1 >= 21 = (V2 (0 :: Int) 1, cache)
-      | otherwise =
-        let (res, cache') = first swapV2 $ Prelude.foldl' fFold (V2 0 0, cache) allQuantumDicesSums
-         in (res, HashMap.insert (p0, p1) res cache')
+    go (p0, p1)
+      | score p1 >= 21 = pure $ V2 (0 :: Int) 1
+      | otherwise = (swapV2 . sum)  <$> mapM fFold allQuantumDicesSums
       where
-        fFold (scores, c) delta = first (+scores) $ go (p1, playerStep delta p0) c
+        fFold delta = memo go (p1, playerStep delta p0)
 
 swapV2 (V2 a b) = V2 b a
 
+allQuantumDicesSums :: [Int]
 allQuantumDicesSums = do
   dice1 <- [1 .. 3]
   dice2 <- [1 .. 3]

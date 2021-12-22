@@ -1,4 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Utils (
     module Utils
   , module Relude.Extra
@@ -55,6 +57,8 @@ import qualified Data.Text as Text
 import Data.String.Here
 
 import PyF
+import Control.Monad.Memo
+import qualified Data.HashMap.Strict as HashMap
 
 -- So I can use it in the shell
 -- dayX <$$> content
@@ -257,3 +261,8 @@ unsafeSplitOn2 needle t = case Text.splitOn needle t of
                       _ -> error "splitOn2 did not returned 2 items"
 
 unsafeUncons = Unsafe.fromJust . uncons
+
+-- For memoization
+instance (Eq k, Hashable k) => MapLike (HashMap.HashMap k v) k v where
+    lookup = HashMap.lookup
+    add = HashMap.insert
