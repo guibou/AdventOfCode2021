@@ -13,20 +13,20 @@ parseContent :: Text -> _
 parseContent = unsafeParse (Prelude.some (parseLine <* (eof <|> void "\n")))
 
 data Switch = On | Off
-  deriving (Show, Eq)
+  deriving (Show)
 
 data Cube = Cube
   { rangeX :: !Range,
     rangeY :: !Range,
     rangeZ :: !Range
   }
-  deriving (Show, Eq, Generic)
+  deriving (Show)
 
 data Range = Range
   { rangeMin :: !Int,
     rangeMax :: !Int
   }
-  deriving (Show, Eq, Generic)
+  deriving (Show)
 
 parseSwitch = (On <$ "on") <|> (Off <$ "off")
 
@@ -50,12 +50,13 @@ parseRange = do
 -- * Generics
 
 -- * FIRST problem
+
 day = score . clip50 . compute
 
 clip50 = catMaybes . map (cubeIntersection c)
- where
-   r = Range (-50) 50
-   c = Cube r r r
+  where
+    r = Range (-50) 50
+    c = Cube r r r
 
 cubeIntersection :: Cube -> Cube -> Maybe Cube
 cubeIntersection (Cube rx ry rz) (Cube rx' ry' rz') = Cube <$> intersectRange rx rx' <*> intersectRange ry ry' <*> intersectRange rz rz'
@@ -68,30 +69,29 @@ toRange a b
   | otherwise = Nothing
 
 worldOfCube :: Cube -> [Cube]
-worldOfCube c@(Cube (Range minX maxX) (Range minY maxY) (Range minZ maxZ)) = do
-  rx <- map (uncurry Range) [(minBound, minX-1), (minX, maxX), (maxX + 1, maxBound)]
-  ry <- map (uncurry Range) [(minBound, minY-1), (minY, maxY), (maxY + 1, maxBound)]
-  rz <- map (uncurry Range) [(minBound, minZ-1), (minZ, maxZ), (maxZ + 1, maxBound)]
+worldOfCube (Cube (Range minX maxX) (Range minY maxY) (Range minZ maxZ)) = drop 1 $ do
+  rx <- map (uncurry Range) [(minX, maxX), (minBound, minX -1), (maxX + 1, maxBound)]
+  ry <- map (uncurry Range) [(minY, maxY), (minBound, minY -1), (maxY + 1, maxBound)]
+  rz <- map (uncurry Range) [(minZ, maxZ), (minBound, minZ -1), (maxZ + 1, maxBound)]
 
-  let c' = Cube rx ry rz
-  guard $ c /= c'
-  pure c'
+  pure $ Cube rx ry rz
 
 overrideWith :: Cube -> Cube -> [Cube]
 overrideWith c0 c1
   | Nothing <- c1 `cubeIntersection` c0 = [c0]
-  | otherwise = 
-      let world = worldOfCube c1
-       in catMaybes (map (cubeIntersection c0) world)
+  | otherwise =
+    let world = worldOfCube c1
+     in catMaybes (map (cubeIntersection c0) world)
 
 overrideAllWith :: [Cube] -> (Switch, Cube) -> [Cube]
-overrideAllWith l (s, cube)
-  | s == On = cube:result
-  | otherwise = result
+overrideAllWith l (s, cube) = case s of
+  On -> cube : result
+  Off -> result
   where
     result = concat (map (\a -> overrideWith a cube) l)
 
 -- * SECOND problem
+
 solve = score . compute
 
 score = sum . map cubeSize
@@ -103,6 +103,7 @@ day' = solve
 cubeSize (Cube rx ry rz) = rangeSize rx * rangeSize ry * rangeSize rz
 
 rangeSize (Range m m') = m' - m + 1
+
 -- * Tests
 
 ex =
@@ -114,7 +115,9 @@ off x=9..11,y=9..11,z=9..11
 on x=10..10,y=10..10,z=10..10
 |]
 
-largeEx = parseContent [str|\
+largeEx =
+  parseContent
+    [str|\
 on x=-5..47,y=-31..22,z=-19..33
 on x=-44..5,y=-27..21,z=-14..35
 on x=-49..-1,y=-11..42,z=-10..38
