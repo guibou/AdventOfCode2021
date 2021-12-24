@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 cabal build alltests
-python bench.py | sort -k 3 > bench.txt
+python bench.py | sort -k 3 -n > bench.txt
 gnuplot bench.gnuplot
 
 echo "Total Time:"
