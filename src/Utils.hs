@@ -59,6 +59,8 @@ import Data.String.Here
 import PyF
 import Control.Monad.Memo
 import qualified Data.HashMap.Strict as HashMap
+import System.Directory
+import System.Process
 
 -- So I can use it in the shell
 -- dayX <$$> content
@@ -94,7 +96,18 @@ parBufferChunks l = let chunks = (chunksOf 4096 l)
 --
 
 getFile :: Q Exp
-getFile = fmap loc_module qLocation >>= \name -> embedStringFile (Text.unpack $ "content/" <> Text.toLower (toText name))
+getFile = fmap loc_module qLocation >>= \name -> do
+  let filename = Text.unpack $ "content/" <> Text.toLower (toText name)
+  let dayNumber = fromJust $ readMaybe @Int (drop 3 name)
+
+  Language.Haskell.TH.runIO $ do
+    e <- doesFileExist filename
+    when (not e) $ do
+      session_id <- (Text.unpack . Text.strip . Text.pack) <$> readFile "./SECRET_SESSION_ID"
+      print ["-b", "session="<>session_id, "https://adventofcode.com/2021/day/" <> show dayNumber <> "/input", "-o", filename]
+      callProcess "curl" ["-b", "session=" <> session_id, "https://adventofcode.com/2021/day/" <> show dayNumber <> "/input", "-o", filename]
+
+  embedStringFile (Text.unpack $ "content/" <> Text.toLower (toText name))
 
 zipIndex :: V.Vector t -> V.Vector (Int, t)
 zipIndex v = V.zip (V.enumFromN 0 (V.length v)) v

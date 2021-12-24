@@ -87,7 +87,9 @@ executable alltests
                        monoidal-containers,
                        pretty-simple,
                        monad-memo,
-                       optics-core
+                       optics-core,
+                       directory,
+                       process
   -- Set relude (with extra) as the default prelude
   mixins: base hiding (Prelude)
         , relude (Relude as Prelude
