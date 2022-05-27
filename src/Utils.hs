@@ -253,7 +253,7 @@ applyN 0 _ !x = x
 applyN n f !x = applyN (n - 1) f (f x)
 
 sum1ToN :: Integral a => a -> a
-sum1ToN n = sum [1..n]
+sum1ToN n = (1 + n) * n `div` 2
 
 connect8 :: Integral i => [V2 i]
 connect8 = do
